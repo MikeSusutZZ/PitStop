@@ -17,6 +17,7 @@ class Car:
         self.pitPlan = pitPlan
         self.checked = False
         self.prevPos = 0
+        self.originalPos = 0
 
 def swap(array, indA, indB):
     hold = array[indA]
@@ -110,12 +111,26 @@ def lap(car_list, pitstop_time):
 
 
 def main():
+
+    seed = input("Do you want to use a seed? (either n or enter seed): ")
+    if seed == "n":
+        seed = random.randint(0,1000000)
+        print(f"seed randomly set to {seed}")
+    random.seed(seed)
+
+    p1Name = input("Name of your first driver: ")
+    p2Name = input("Name of your second driver: ")
+    if p1Name == "":
+        p1Name = "Driver 1"
+    if p2Name == "":
+        p2Name = "Driver 2"
+
     global LAP
     global NAMES
     LAPCOUNT = random.randint(10, 15)
     LAP = 1
-    player_car1 = Car("Zippidy", random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
-    player_car2 = Car("Susut", random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
+    player_car1 = Car(p1Name, random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
+    player_car2 = Car(p2Name, random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
 
     computer_cars = [
         Car(NAMES[i], random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), random.randint(1, LAPCOUNT))
@@ -133,14 +148,16 @@ def main():
     pitstop_time = random.randint(5, 10)
 
     print(f"The race is {LAPCOUNT} laps long")
-    print(f"Pitstop time penalty is {pitstop_time}")
+    print(f"Pitstop time penalty is {pitstop_time}s")
 
     print("Initial car order:")
     for i, car in enumerate(all_cars):
-        print(f"{i + 1}. {car.name} - Position: {car.position}")
+        print(f"{i + 1}. {car.name}")
+        car.originalPos = i
+    print("")
 
     for current_lap in range(1, LAPCOUNT + 1):
-        print(f"\nLap {current_lap}")
+        print(f"Lap {current_lap}")
         if(not player_car1.pitstop_done):
             #print(f"{LAP} {LAPCOUNT}")
             if(LAP == LAPCOUNT):
@@ -181,13 +198,18 @@ def main():
             elif(car.prevPos < i):
                 for j in range(i - car.prevPos):
                     posChange = posChange + "⬇"
-            print(f"{i + 1}. {posChange} {car.name} - Position: {car.position} - Pitstop: {pitstop_status}")
-
+            print(f"{i + 1}. {posChange} {car.name} +{abs(car.position - all_cars[0].position)}s - Pitstop: {pitstop_status}")
+        print("\n")
     player1_end = all_cars.index(player_car1) + 1
     player2_end = all_cars.index(player_car2) + 1
-
-    print(f"\nPlayer1 started at position {player1_start} and ended at position {player1_end}")
-    print(f"Player2 started at position {player2_start} and ended at position {player2_end}")
+    print("**   FINAL RESULTS   **")
+    for i, car in enumerate(all_cars):
+            posChange = ""
+            if(car.originalPos > i):
+                posChange = posChange + "⬆"
+            elif(car.originalPos < i):
+                posChange = posChange + "⬇"
+            print(f"{i + 1}. {posChange}({car.originalPos + 1}->{i + 1}){car.name} +{abs(car.position - all_cars[0].position)}s")
 
 if __name__ == '__main__':
     main()
