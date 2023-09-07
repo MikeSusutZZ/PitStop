@@ -7,15 +7,14 @@ win the race, it's to do the best you can with the cars you've been given
 Each driver has 4 traits
 - Pace: How far they move down the track each lap
 - Inconsistency: The varience of a drivers pace lap to lap
-    (*A driver with a pace of 20 and inconsistency of 4 could move 16-20
-    position in a lap*)
+    (*A driver with a pace of 20 and inconsistency of 4 could gain 1-5 seconds on a car with 15 pace and 0 inconsistency*)
 - Overtaking and Defending: Used to determine the sucess of an overtake attempt
     by or against them
 
 ## Strategy
 If a driver would get to a position ahead of the car in front of them, they need to
 attempt an overtake. Depending on the Overtaking and Defending skills of the 
-drivers involved, this could be a challenge. A failed overtake will force the car behind
+drivers involved, this could be a challenge. A failed overtake will force the car behind to
 slow their pace to match the distance of the driver ahead. So if you have a faster car, 
 make sure you don't waste time behind defensive slow ones. Open air is best.
 
