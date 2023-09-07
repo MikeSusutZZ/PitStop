@@ -7,8 +7,7 @@ win the race, it's to do the best you can with the cars you've been given
 Each driver has 4 traits
 - Pace: How far they move down the track each lap
 - Inconsistency: The varience of a drivers pace lap to lap
-    (*A driver with a pace of 20 and inconsistency of 4 could move 16-20
-    position in a lap*)
+    (*A driver with a pace of 20 and inconsistency of 4 could gain 1-5 seconds on a car with 15 paceand 0 inconsistency*)
 - Overtaking and Defending: Used to determine the sucess of an overtake attempt
     by or against them
 
