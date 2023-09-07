@@ -138,7 +138,7 @@ def main():
     ]
 
     all_cars = [player_car1, player_car2] + computer_cars
-    all_cars.sort(key=lambda x: x.pace + random.randint(-x.inconsistency, x.inconsistency), reverse=True)
+    all_cars.sort(key=lambda x: x.pace - random.randint(0, x.inconsistency), reverse=True)
 
     print_driver_info(all_cars)
 
@@ -198,10 +198,9 @@ def main():
             elif(car.prevPos < i):
                 for j in range(i - car.prevPos):
                     posChange = posChange + "⬇"
-            print(f"{i + 1}. {posChange} {car.name} +{abs(car.position - all_cars[0].position)}s - Pitstop: {pitstop_status}")
+            print(f"{i + 1}. {posChange} {car.name} +{abs(car.position - all_cars[0].position)}s - Pitstop: {pitstop_status}     ({car.pace}, {car.inconsistency}, {car.overtaking}, {car.defending})")
         print("\n")
-    player1_end = all_cars.index(player_car1) + 1
-    player2_end = all_cars.index(player_car2) + 1
+    
     print("**   FINAL RESULTS   **")
     for i, car in enumerate(all_cars):
             posChange = ""
@@ -209,7 +208,7 @@ def main():
                 posChange = posChange + "⬆"
             elif(car.originalPos < i):
                 posChange = posChange + "⬇"
-            print(f"{i + 1}. {posChange}({car.originalPos + 1}->{i + 1}){car.name} +{abs(car.position - all_cars[0].position)}s")
+            print(f"{i + 1}. {posChange}({car.originalPos + 1}->{i + 1}) {car.name} +{abs(car.position - all_cars[0].position)}s")
 
 if __name__ == '__main__':
     main()
