@@ -49,7 +49,7 @@ def attempt_overtake(attacker, defender):
 
 def return_from_pit(car_list, index):
     if index < 0 or index >= len(car_list):  # Check for out-of-bounds index
-        print(f"Index {index} out of bounds.")
+        #print(f"Index {index} out of bounds.")
         return
 
     target = car_list[index]
@@ -57,7 +57,7 @@ def return_from_pit(car_list, index):
     # Using min to ensure the loop doesn't go out of bounds
     for i in range(index + 1, min(len(car_list), 9)):
         opp = car_list[i]
-        if target.position <= opp.position:
+        if target.position <= opp.position and i < 10:
             try:
                 swap(car_list, index, i)  # Changed from index + i to i
             except Exception as e:  # It's good to know what kind of exception occurred
