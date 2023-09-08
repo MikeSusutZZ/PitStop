@@ -49,12 +49,34 @@ def attempt_overtake(attacker, defender):
 
 def return_from_pit(car_list, index):
     target = car_list[index]
-    for i in range(index, 9):
+    for i in range(index, 8):
         opp = car_list[index + 1]
         if(target.position <= opp.position):
+            #print(f"swapping {car_list[index].name} and {car_list[index+i].name}")
             swap(car_list, index, index + i)
-            print(f"pit swapping {target} and {opp}")
+            #print(f"pit swapping {target} and {opp}")
             index += 1
+
+
+def expectedPosition(car_list):
+    scores = []
+    # Populate the scores list
+    for car in car_list:
+        scores.append({
+            "name": car.name, 
+            "score": (car.pace * 2 - car.inconsistency + car.overtaking + car.defending)
+        })
+
+    # Sort the list of dictionaries by the 'score' key in descending order
+    sorted_scores = sorted(scores, key=lambda x: x['score'], reverse=True)
+
+    # Print the sorted list
+    print("Expected Final Positions \n Try to match or do better than this\n")
+    for i, car_score in enumerate(sorted_scores, 1):
+        print(f"{i}. {car_score['name']}")
+    print("\n")
+
+
 
 
 def lap(car_list, pitstop_time):
@@ -129,11 +151,11 @@ def main():
     global NAMES
     LAPCOUNT = random.randint(10, 15)
     LAP = 1
-    player_car1 = Car(p1Name, random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
-    player_car2 = Car(p2Name, random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
+    player_car1 = Car(p1Name, random.randint(1, 7), random.randint(1, 5), random.randint(1, 5), random.randint(1, 5), None)
+    player_car2 = Car(p2Name, random.randint(1, 7), random.randint(1, 5), random.randint(1, 5), random.randint(1, 5), None)
 
     computer_cars = [
-        Car(NAMES[i], random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), random.randint(1, LAPCOUNT))
+        Car(NAMES[i], random.randint(1, 7), random.randint(1, 5), random.randint(1, 5), random.randint(1, 5), random.randint(1, LAPCOUNT))
         for i in range(0, 8)
     ]
 
@@ -141,6 +163,7 @@ def main():
     all_cars.sort(key=lambda x: x.pace - random.randint(0, x.inconsistency), reverse=True)
 
     print_driver_info(all_cars)
+    expectedPosition(all_cars)
 
     player1_start = all_cars.index(player_car1) + 1
     player2_start = all_cars.index(player_car2) + 1
@@ -211,4 +234,8 @@ def main():
             print(f"{i + 1}. {posChange}({car.originalPos + 1}->{i + 1}) {car.name} +{abs(car.position - all_cars[0].position)}s")
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
+        play = input("Run again (y) or close (n)")
+        if(play == 'n'):
+            break
