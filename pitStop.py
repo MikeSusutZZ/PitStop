@@ -190,14 +190,14 @@ def main():
         #all_cars.sort(key=lambda x: x.position, reverse=True)
 
         for i, car in enumerate(all_cars):
-            pitstop_status = '✅' if car.pitstop_done else '❌'
+            pitstop_status = '(y)' if car.pitstop_done else '(n)'
             posChange = ""
             if(car.prevPos > i):
                 for j in range(car.prevPos - i):
-                    posChange = posChange + "⬆"
+                    posChange = posChange + "+"
             elif(car.prevPos < i):
                 for j in range(i - car.prevPos):
-                    posChange = posChange + "⬇"
+                    posChange = posChange + "-"
             print(f"{i + 1}. {posChange} {car.name} +{abs(car.position - all_cars[0].position)}s - Pitstop: {pitstop_status}     ({car.pace}, {car.inconsistency}, {car.overtaking}, {car.defending})")
         print("\n")
     
@@ -205,9 +205,9 @@ def main():
     for i, car in enumerate(all_cars):
             posChange = ""
             if(car.originalPos > i):
-                posChange = posChange + "⬆"
+                posChange = posChange + "+"
             elif(car.originalPos < i):
-                posChange = posChange + "⬇"
+                posChange = posChange + "-"
             print(f"{i + 1}. {posChange}({car.originalPos + 1}->{i + 1}) {car.name} +{abs(car.position - all_cars[0].position)}s")
 
 if __name__ == '__main__':
