@@ -48,14 +48,22 @@ def attempt_overtake(attacker, defender):
     return attack_value > defend_value
 
 def return_from_pit(car_list, index):
+    if index < 0 or index >= len(car_list):  # Check for out-of-bounds index
+        print(f"Index {index} out of bounds.")
+        return
+
     target = car_list[index]
-    for i in range(index, 8):
-        opp = car_list[index + 1]
-        if(target.position <= opp.position):
-            #print(f"swapping {car_list[index].name} and {car_list[index+i].name}")
-            swap(car_list, index, index + i)
-            #print(f"pit swapping {target} and {opp}")
-            index += 1
+
+    # Using min to ensure the loop doesn't go out of bounds
+    for i in range(index + 1, min(len(car_list), 9)):
+        opp = car_list[i]
+        if target.position <= opp.position:
+            try:
+                swap(car_list, index, i)  # Changed from index + i to i
+            except Exception as e:  # It's good to know what kind of exception occurred
+                print(f"issue with pit rejoin between {target.name} and {opp.name}: {e}")
+            index += 1  # Update the index
+
 
 
 def expectedPosition(car_list):
@@ -93,7 +101,10 @@ def lap(car_list, pitstop_time):
         car = car_list[i]
         while(car.checked):
             i += 1
-            car = car_list[i]
+            if(i < len(car_list)):
+                car = car_list[i]
+            else:
+                break
         #print(f"Looking at {car.name}\n")
         car.position += car.pace - random.randint(0, car.inconsistency)
         if (car.pitPlan == LAP): # If taking a pitstopn
