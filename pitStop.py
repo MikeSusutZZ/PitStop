@@ -147,7 +147,7 @@ def main():
 
     seed = input("Do you want to use a seed? (either n or enter seed): ")
     if seed == "n":
-        seed = random.randint(0,1000000)
+        seed = random.randint(0,10000)
         print(f"seed randomly set to {seed}")
     random.seed(seed)
 
@@ -198,7 +198,7 @@ def main():
                 player_car1.pitPlan = LAP
                 print(f"{player_car1.name} pits.")
             else :
-                player1_pit_decision = input(f"Would {player_car1.name} like to take a pit stop this lap? (y/n): ")
+                player1_pit_decision = input(f"Would {player_car1.name} like to take a pit stop this lap? -{pitstop_time}s (y/n): ")
                 if player1_pit_decision.lower() == 'y':
                     player_car1.pitPlan = LAP
                     print(f"{player_car1.name} pits.")
@@ -208,7 +208,7 @@ def main():
                 player_car2.pitPlan = LAP
                 print(f"{player_car2.name} pits.")
             else:
-                player2_pit_decision = input(f"Would {player_car2.name} like to take a pit stop this lap? (y/n): ")
+                player2_pit_decision = input(f"Would {player_car2.name} like to take a pit stop this lap? -{pitstop_time}s (y/n): ")
                 if player2_pit_decision.lower() == 'y':
                     player_car2.pitPlan = LAP
                     print(f"{player_car2.name} pits.")
