@@ -191,7 +191,7 @@ def main():
     print("")
 
     for current_lap in range(1, LAPCOUNT + 1):
-        print(f"Lap {current_lap}")
+        print(f"Lap {current_lap}/{LAPCOUNT}")
         if(not player_car1.pitstop_done):
             #print(f"{LAP} {LAPCOUNT}")
             if(LAP == LAPCOUNT):
