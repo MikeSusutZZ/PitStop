@@ -48,13 +48,43 @@ def attempt_overtake(attacker, defender):
     return attack_value > defend_value
 
 def return_from_pit(car_list, index):
+    if index < 0 or index >= len(car_list):  # Check for out-of-bounds index
+        #print(f"Index {index} out of bounds.")
+        return
+
     target = car_list[index]
-    for i in range(index, 9):
-        opp = car_list[index + 1]
-        if(target.position <= opp.position):
-            swap(car_list, index, index + i)
-            print(f"pit swapping {target} and {opp}")
-            index += 1
+
+    # Using min to ensure the loop doesn't go out of bounds
+    for i in range(index + 1, min(len(car_list), 9)):
+        opp = car_list[i]
+        if target.position <= opp.position and i < 10:
+            try:
+                swap(car_list, index, i)  # Changed from index + i to i
+            except Exception as e:  # It's good to know what kind of exception occurred
+                print(f"issue with pit rejoin between {target.name} and {opp.name}: {e}")
+            index += 1  # Update the index
+
+
+
+def expectedPosition(car_list):
+    scores = []
+    # Populate the scores list
+    for car in car_list:
+        scores.append({
+            "name": car.name, 
+            "score": (car.pace * 2 - car.inconsistency + car.overtaking + car.defending)
+        })
+
+    # Sort the list of dictionaries by the 'score' key in descending order
+    sorted_scores = sorted(scores, key=lambda x: x['score'], reverse=True)
+
+    # Print the sorted list
+    print("Expected Final Positions \n Try to match or do better than this\n")
+    for i, car_score in enumerate(sorted_scores, 1):
+        print(f"{i}. {car_score['name']}")
+    print("\n")
+
+
 
 
 def lap(car_list, pitstop_time):
@@ -71,7 +101,10 @@ def lap(car_list, pitstop_time):
         car = car_list[i]
         while(car.checked):
             i += 1
-            car = car_list[i]
+            if(i < len(car_list)):
+                car = car_list[i]
+            else:
+                break
         #print(f"Looking at {car.name}\n")
         car.position += car.pace - random.randint(0, car.inconsistency)
         if (car.pitPlan == LAP): # If taking a pitstopn
@@ -114,7 +147,7 @@ def main():
 
     seed = input("Do you want to use a seed? (either n or enter seed): ")
     if seed == "n":
-        seed = random.randint(0,1000000)
+        seed = random.randint(0,10000)
         print(f"seed randomly set to {seed}")
     random.seed(seed)
 
@@ -129,11 +162,11 @@ def main():
     global NAMES
     LAPCOUNT = random.randint(10, 15)
     LAP = 1
-    player_car1 = Car(p1Name, random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
-    player_car2 = Car(p2Name, random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), None)
+    player_car1 = Car(p1Name, random.randint(1, 7), random.randint(1, 5), random.randint(1, 5), random.randint(1, 5), None)
+    player_car2 = Car(p2Name, random.randint(1, 7), random.randint(1, 5), random.randint(1, 5), random.randint(1, 5), None)
 
     computer_cars = [
-        Car(NAMES[i], random.randint(15, 20), random.randint(1, 4), random.randint(1, 10), random.randint(1, 10), random.randint(1, LAPCOUNT))
+        Car(NAMES[i], random.randint(1, 7), random.randint(1, 5), random.randint(1, 5), random.randint(1, 5), random.randint(1, LAPCOUNT))
         for i in range(0, 8)
     ]
 
@@ -141,6 +174,7 @@ def main():
     all_cars.sort(key=lambda x: x.pace - random.randint(0, x.inconsistency), reverse=True)
 
     print_driver_info(all_cars)
+    expectedPosition(all_cars)
 
     player1_start = all_cars.index(player_car1) + 1
     player2_start = all_cars.index(player_car2) + 1
@@ -164,7 +198,7 @@ def main():
                 player_car1.pitPlan = LAP
                 print(f"{player_car1.name} pits.")
             else :
-                player1_pit_decision = input(f"Would {player_car1.name} like to take a pit stop this lap? (y/n): ")
+                player1_pit_decision = input(f"Would {player_car1.name} like to take a pit stop this lap? -{pitstop_time}s (y/n): ")
                 if player1_pit_decision.lower() == 'y':
                     player_car1.pitPlan = LAP
                     print(f"{player_car1.name} pits.")
@@ -174,7 +208,7 @@ def main():
                 player_car2.pitPlan = LAP
                 print(f"{player_car2.name} pits.")
             else:
-                player2_pit_decision = input(f"Would {player_car2.name} like to take a pit stop this lap? (y/n): ")
+                player2_pit_decision = input(f"Would {player_car2.name} like to take a pit stop this lap? -{pitstop_time}s (y/n): ")
                 if player2_pit_decision.lower() == 'y':
                     player_car2.pitPlan = LAP
                     print(f"{player_car2.name} pits.")
@@ -190,14 +224,14 @@ def main():
         #all_cars.sort(key=lambda x: x.position, reverse=True)
 
         for i, car in enumerate(all_cars):
-            pitstop_status = '✅' if car.pitstop_done else '❌'
+            pitstop_status = '(y)' if car.pitstop_done else '(n)'
             posChange = ""
             if(car.prevPos > i):
                 for j in range(car.prevPos - i):
-                    posChange = posChange + "⬆"
+                    posChange = posChange + "+"
             elif(car.prevPos < i):
                 for j in range(i - car.prevPos):
-                    posChange = posChange + "⬇"
+                    posChange = posChange + "-"
             print(f"{i + 1}. {posChange} {car.name} +{abs(car.position - all_cars[0].position)}s - Pitstop: {pitstop_status}     ({car.pace}, {car.inconsistency}, {car.overtaking}, {car.defending})")
         print("\n")
     
@@ -205,10 +239,14 @@ def main():
     for i, car in enumerate(all_cars):
             posChange = ""
             if(car.originalPos > i):
-                posChange = posChange + "⬆"
+                posChange = posChange + "+"
             elif(car.originalPos < i):
-                posChange = posChange + "⬇"
+                posChange = posChange + "-"
             print(f"{i + 1}. {posChange}({car.originalPos + 1}->{i + 1}) {car.name} +{abs(car.position - all_cars[0].position)}s")
 
 if __name__ == '__main__':
-    main()
+    while True:
+        main()
+        play = input("Run again (y) or close (n)")
+        if(play == 'n'):
+            break
